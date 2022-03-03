@@ -1,18 +1,19 @@
 import {
+  IsEmail,
   IsOptional,
   IsString,
 } from 'class-validator';
 
-export class EditBookmarkDto {
-  @IsString()
+export class ReadUserDto {
+  @IsEmail()
   @IsOptional()
-  title?: string;
+  email?: string;
 
   @IsString()
   @IsOptional()
-  description?: string;
+  firstName?: string;
 
   @IsString()
   @IsOptional()
-  link?: string;
+  lastName?: string;
 }

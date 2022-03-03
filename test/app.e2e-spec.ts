@@ -30,6 +30,7 @@ describe('App e2e', () => {
       }),
     );
     await app.init();
+    app.setGlobalPrefix('api');
     await app.listen(3333);
 
     prisma = app.get(PrismaService);
@@ -52,7 +53,7 @@ describe('App e2e', () => {
       it('should throw if email empty', () => {
         return pactum
           .spec()
-          .post('/auth/signup')
+          .post('/api/auth/signup')
           .withBody({
             password: dto.password,
           })
@@ -61,7 +62,7 @@ describe('App e2e', () => {
       it('should throw if password empty', () => {
         return pactum
           .spec()
-          .post('/auth/signup')
+          .post('/api/auth/signup')
           .withBody({
             email: dto.email,
           })
@@ -70,13 +71,13 @@ describe('App e2e', () => {
       it('should throw if no body provided', () => {
         return pactum
           .spec()
-          .post('/auth/signup')
+          .post('/api/auth/signup')
           .expectStatus(400);
       });
       it('should signup', () => {
         return pactum
           .spec()
-          .post('/auth/signup')
+          .post('/api/auth/signup')
           .withBody(dto)
           .expectStatus(201);
       });
@@ -86,7 +87,7 @@ describe('App e2e', () => {
       it('should throw if email empty', () => {
         return pactum
           .spec()
-          .post('/auth/signin')
+          .post('/api/auth/signin')
           .withBody({
             password: dto.password,
           })
@@ -95,7 +96,7 @@ describe('App e2e', () => {
       it('should throw if password empty', () => {
         return pactum
           .spec()
-          .post('/auth/signin')
+          .post('/api/auth/signin')
           .withBody({
             email: dto.email,
           })
@@ -104,13 +105,13 @@ describe('App e2e', () => {
       it('should throw if no body provided', () => {
         return pactum
           .spec()
-          .post('/auth/signin')
+          .post('/api/auth/signin')
           .expectStatus(400);
       });
       it('should signin', () => {
         return pactum
           .spec()
-          .post('/auth/signin')
+          .post('/api/auth/signin')
           .withBody(dto)
           .expectStatus(200)
           .stores('userAt', 'access_token');
@@ -123,7 +124,7 @@ describe('App e2e', () => {
       it('should get current user', () => {
         return pactum
           .spec()
-          .get('/users/me')
+          .get('/api/users/me')
           .withHeaders({
             Authorization: 'Bearer $S{userAt}',
           })
@@ -139,7 +140,7 @@ describe('App e2e', () => {
         };
         return pactum
           .spec()
-          .patch('/users')
+          .patch('/api/users')
           .withHeaders({
             Authorization: 'Bearer $S{userAt}',
           })
@@ -156,7 +157,7 @@ describe('App e2e', () => {
       it('should get bookmarks', () => {
         return pactum
           .spec()
-          .get('/bookmarks')
+          .get('/api/bookmarks')
           .withHeaders({
             Authorization: 'Bearer $S{userAt}',
           })
@@ -173,7 +174,7 @@ describe('App e2e', () => {
       it('should create bookmark', () => {
         return pactum
           .spec()
-          .post('/bookmarks')
+          .post('/api/bookmarks')
           .withHeaders({
             Authorization: 'Bearer $S{userAt}',
           })
@@ -187,7 +188,7 @@ describe('App e2e', () => {
       it('should get bookmarks', () => {
         return pactum
           .spec()
-          .get('/bookmarks')
+          .get('/api/bookmarks')
           .withHeaders({
             Authorization: 'Bearer $S{userAt}',
           })
@@ -200,7 +201,7 @@ describe('App e2e', () => {
       it('should get bookmark by id', () => {
         return pactum
           .spec()
-          .get('/bookmarks/{id}')
+          .get('/api/bookmarks/{id}')
           .withPathParams('id', '$S{bookmarkId}')
           .withHeaders({
             Authorization: 'Bearer $S{userAt}',
@@ -220,7 +221,7 @@ describe('App e2e', () => {
       it('should edit bookmark', () => {
         return pactum
           .spec()
-          .patch('/bookmarks/{id}')
+          .patch('/api/bookmarks/{id}')
           .withPathParams('id', '$S{bookmarkId}')
           .withHeaders({
             Authorization: 'Bearer $S{userAt}',
@@ -236,7 +237,7 @@ describe('App e2e', () => {
       it('should delete bookmark', () => {
         return pactum
           .spec()
-          .delete('/bookmarks/{id}')
+          .delete('/api/bookmarks/{id}')
           .withPathParams('id', '$S{bookmarkId}')
           .withHeaders({
             Authorization: 'Bearer $S{userAt}',
@@ -247,7 +248,7 @@ describe('App e2e', () => {
       it('should get empty bookmarks', () => {
         return pactum
           .spec()
-          .get('/bookmarks')
+          .get('/api/bookmarks')
           .withHeaders({
             Authorization: 'Bearer $S{userAt}',
           })
