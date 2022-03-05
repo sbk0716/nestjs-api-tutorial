@@ -20,16 +20,16 @@ export class AuthService {
   /**
    * signup
    * 1. generate the password hash
-   * 2. save the new user in the db
+   * 2. save the new user in the database
    * 3. execute signToken()
    * @param dto
    * @returns
    */
   async signup(dto: AuthDto) {
-    // generate the password hash
+    // generate the password hash with argon2 hash method
     const hash = await argon.hash(dto.password);
-    // save the new user in the db
     try {
+      // save the new user in the database
       const user = await this.prisma.user.create({
         data: {
           email: dto.email,
@@ -56,7 +56,7 @@ export class AuthService {
   /**
    * signin
    * 1. find the user by email
-   * 2. compare password
+   * 2. check if the values of A and B match with argon2 verify method
    * 3. execute signToken()
    * @param dto
    * @returns
@@ -74,12 +74,17 @@ export class AuthService {
       throw new ForbiddenException(
         'Credentials incorrect',
       );
-
-    // compare password
+    /**
+     * check if the values of A and B match with argon2 verify method.
+     * A) Hash value of the target user retrieved from the database
+     * B) Hash generated using the password contained in the request body
+     */
     const pwMatches = await argon.verify(
-      user.hash,
-      dto.password,
+      user.hash, // A
+      dto.password, // B
     );
+    console.info('+++ pwMatches +++');
+    console.info(pwMatches);
     // if password incorrect throw exception
     if (!pwMatches)
       throw new ForbiddenException(
@@ -121,7 +126,7 @@ export class AuthService {
       },
     );
     // decode token with JwtService.decode()
-    const decodeResult = await this.jwt.decode(token)
+    const decodeResult = this.jwt.decode(token);
     console.info('+++ decodeResult +++');
     console.info(decodeResult);
     return {
