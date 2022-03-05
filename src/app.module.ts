@@ -21,8 +21,8 @@ import configuration from './config/configuration';
   imports: [
     /**
      * ConfigModule.forRoot()
-     * Loads process environment variables depending on the "ignoreEnvFile" flag and "envFilePath" value.
-     * Also, registers custom configurations globally.
+     * Load process environment variables depending on the "envFilePath" value.
+     * Register custom configurations globally.
      * @see https://docs.nestjs.com/techniques/configuration
      */
     ConfigModule.forRoot({
