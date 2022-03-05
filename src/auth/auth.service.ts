@@ -17,6 +17,14 @@ export class AuthService {
     private config: ConfigService,
   ) {}
 
+  /**
+   * signup
+   * 1. generate the password hash
+   * 2. save the new user in the db
+   * 3. execute signToken()
+   * @param dto
+   * @returns
+   */
   async signup(dto: AuthDto) {
     // generate the password hash
     const hash = await argon.hash(dto.password);
@@ -28,7 +36,7 @@ export class AuthService {
           hash,
         },
       });
-
+      // execute signToken()
       return this.signToken(user.id, user.email);
     } catch (error) {
       if (
@@ -45,6 +53,14 @@ export class AuthService {
     }
   }
 
+  /**
+   * signin
+   * 1. find the user by email
+   * 2. compare password
+   * 3. execute signToken()
+   * @param dto
+   * @returns
+   */
   async signin(dto: AuthDto) {
     // find the user by email
     const user =
@@ -72,6 +88,13 @@ export class AuthService {
     return this.signToken(user.id, user.email);
   }
 
+  /**
+   * signToken
+   * generate token with JwtService.signAsync()
+   * @param userId
+   * @param email
+   * @returns
+   */
   async signToken(
     userId: number,
     email: string,
@@ -80,8 +103,16 @@ export class AuthService {
       sub: userId,
       email,
     };
+    console.info('+++ this.config +++');
+    console.info(this.config);
     const secret = this.config.get('JWT_SECRET');
-
+    const apiConfig = this.config.get('api');
+    const dbConfig = this.config.get('db');
+    console.info('+++ apiConfig +++');
+    console.info(apiConfig);
+    console.info('+++ dbConfig +++');
+    console.info(dbConfig);
+    // generate token with JwtService.signAsync()
     const token = await this.jwt.signAsync(
       payload,
       {
@@ -89,7 +120,10 @@ export class AuthService {
         secret: secret,
       },
     );
-
+    // decode token with JwtService.decode()
+    const decodeResult = await this.jwt.decode(token)
+    console.info('+++ decodeResult +++');
+    console.info(decodeResult);
     return {
       access_token: token,
     };
