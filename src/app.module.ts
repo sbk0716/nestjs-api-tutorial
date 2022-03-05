@@ -13,7 +13,7 @@ import configuration from './config/configuration';
 
 @Module({
   /**
-   * ModuleMetadata | imports
+   * ModuleMetadata.imports?
    * Optional list of imported modules that export the providers
    * which are required in this module.
    * @see https://docs.nestjs.com/techniques/database#typeorm-integration
